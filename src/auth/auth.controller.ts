@@ -1,24 +1,21 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUser } from './DTOs/registerUser.dto';
-import { UseGuards } from '@nestjs/common';
-import { ThrottlerGuard } from '@nestjs/throttler';
-import { LoginUser } from './DTOs/loginDto'
+import { LoginUser } from './DTOs/loginDto';
 
-
-@UseGuards(ThrottlerGuard)
-@Controller('auth') // auth/register
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  
+
+  // POST http://localhost:3000/auth/register
+  @Post('register')
+  async register(@Body() registerDto: RegisterUser) {
+    return this.authService.registerUser(registerDto);
+  }
+
+  // POST http://localhost:3000/auth/login
   @Post('login')
   async login(@Body() loginDto: LoginUser) {
-    return await this.authService.login(loginDto);
-  }
-  
-  
-  @Post('register')
-  async register(@Body() registerUserDTO: RegisterUser) {
-    return await this.authService.registerUser(registerUserDTO);
+    return this.authService.login(loginDto);
   }
 }
